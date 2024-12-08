@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./icon.png">
+    <link rel="stylesheet" href="./index.css">
+    <title>Three Js</title>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./vendor/three/build/three.module.js",
+                "three/addons/": "./vendor/three/examples/jsm/"
+            }
+        }
+    </script>
+    <!-- 默认加载 js -->
+    <script src="./index.js" type="module"></script>
+
+    <div id="scene-container">
+        <!-- Our <canvas> will be inserted here -->
+    </div>
+</body>
+
+</html>
