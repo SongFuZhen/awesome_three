@@ -28,6 +28,7 @@ class BasicWorld {
     camera = createCamera(container.innerWidth, container.innerHeight);
     renderer = createRenderer();
     scene = createScene();
+    this.Scene = scene; // 将场景暴露出去，方便在其他系统中使用
     loop = new Loop(camera, scene, renderer);
     container.append(renderer.domElement);
     controls = createControls(camera, renderer.domElement);
@@ -46,9 +47,9 @@ class BasicWorld {
     // 添加辅助组件
     scene.add(
       axesHelper,
-      gridHelper
-      //   cameraHelper(camera),
-      //   lightHelper(mainLight)
+      gridHelper,
+      // cameraHelper(camera),
+      // lightHelper(mainLight)
     );
   }
 
@@ -60,16 +61,19 @@ class BasicWorld {
     );
     await remoteModels.loadModels();
 
-    // 获取模型并添加到场景中
-    Object.keys(remoteModels.getModels()).map((d, i) => {
-      const model = remoteModels.getModels()[d];
-      loop.updatables.push(model);
-      model.scale.set(0.1, 0.1, 0.1);
-      if (i > 0) {
-        model.position.set(i % 2 == 0 ? (i - 1) * 8 : -i * 8, 1, -16);
-      }
-      scene.add(model);
-    });
+    // 添加 BMW 到场景中
+    const bmw = remoteModels.getModels().bmw;
+    bmw.position.set(0, 0.1, 0);
+    bmw.scale.set(200, 200, 200);
+    scene.add(bmw);
+
+    // 添加鸟到场景中
+    const parrot = remoteModels.getModels().parrot;
+    parrot.position.set(3, 5, -5);
+    parrot.scale.set(0.05, 0.05, 0.05);
+    parrot.rotation.set(0, -Math.PI / 2, 0);
+    loop.updatables.push(parrot); // 让鸟动起来
+    scene.add(parrot);
   }
 
   render() {

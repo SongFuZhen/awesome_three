@@ -9,6 +9,7 @@ function createLights() {
 
     const mainLight = new DirectionalLight('white', 4);
     mainLight.position.set(10, 10, 10);
+    mainLight.castShadow = true;
 
     return { ambientLight, mainLight };
 }

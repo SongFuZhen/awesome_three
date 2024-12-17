@@ -10,6 +10,7 @@ const modelKeys = {
   parrot: "Parrot",
   Flamingo: "Flamingo",
   Stork: "Stork",
+  bmw: "bmw",
 };
 
 // 加载远程模型
@@ -39,7 +40,10 @@ class RemoteModels {
 
     for (let index = 0; index < keyArr.length; index++) {
       const modelUrl = this.url + keyArr[index] + ".glb";
-      const gltfModel = await loader.loadAsync( modelUrl, this.onProgress.bind(this));
+      const gltfModel = await loader.loadAsync(
+        modelUrl,
+        this.onProgress.bind(this)
+      );
 
       // 结束加载时，隐藏进度条
       document.getElementById("progressContainer").style.display = "none";
@@ -52,13 +56,15 @@ class RemoteModels {
   setupModel(data) {
     const model = data.scene;
 
-    // 添加动画
-    const clip = data.animations[0];
-    const mixer = new AnimationMixer(model);
-    const action = mixer.clipAction(clip);
-    action.play();
+    if (data.animations.length > 0) {
+      // 添加动画
+      const clip = data.animations[0];
+      const mixer = new AnimationMixer(model);
+      const action = mixer.clipAction(clip);
+      action.play();
 
-    model.tick = (delta) => mixer.update(delta);
+      model.tick = (delta) => mixer.update(delta);
+    }
 
     return model;
   }
