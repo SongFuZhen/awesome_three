@@ -1,4 +1,5 @@
 const progressContainerStyle = {
+  display: "none",
   position: "absolute",
   width: "400px",
   height: "16px",
@@ -36,13 +37,24 @@ class ProgressBar {
 
   // 更新进度条
   progress(progress) {
+    let validProgress = progress;
+
+    if (validProgress > 1) {
+      validProgress = 1;
+    }
+
+    this.progressContainer.style.display = "block";
     // 宽度
-    const width = this.progressContainer.style.width;
+    const width = Number.parseInt(this.progressContainer.style.width);
 
     // 进度条
-    this.progressBar.style.width = progress * width + "px"; // 进度条元素长度
-    this.progressBar.style.textIndent = progress * width + 5 + "px"; //缩进元素中的首行文本
-    this.progressBar.innerHTML = progress * 100 + "%"; //进度百分比
+    this.progressBar.style.width = validProgress * width + "px"; // 进度条元素长度
+    this.progressBar.style.textIndent = validProgress * width + 5 + "px"; //缩进元素中的首行文本
+    this.progressBar.innerHTML = validProgress * 100 + "%"; //进度百分比
+
+    if (validProgress == 1) {
+      this.progressContainer.style.display = "none";
+    }
   }
 
   // 创建外部容器样式
@@ -67,6 +79,10 @@ class ProgressBar {
     });
 
     return progressBar;
+  }
+
+  destory() {
+    this.progressContainer.style.display = "none";
   }
 }
 
