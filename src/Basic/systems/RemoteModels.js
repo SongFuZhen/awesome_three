@@ -11,6 +11,8 @@ const modelKeys = {
   Flamingo: "Flamingo",
   Stork: "Stork",
   bmw: "bmw",
+  road: "road",
+  road2: "road2",
 };
 
 // 加载远程模型
