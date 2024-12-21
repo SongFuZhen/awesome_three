@@ -9,10 +9,10 @@ import { Loop } from "./systems/Loop.js";
 import stats from "./systems/Stats.js";
 import RemoteModels from "./systems/RemoteModels.js";
 import { Road } from "./common/Road.js";
-import { axesHelper, gridHelper, cameraHelper, lightHelper } from "./systems/helper.js";
-import { MathUtils, Vector3 } from "three";
-
-// import { loadBirds } from './components/birds/birds.js';
+import { axesHelper, gridHelper, cameraHelper, lightHelper, hemiLightHelper, lightCameraHelper } from "./systems/helper.js";
+import { CreateFloor } from "./components/floor.js";
+import { MathUtils } from "three";
+import { GuiHelper } from "./Gui/index.js";
 
 let camera;
 let controls;
@@ -35,18 +35,33 @@ class BasicWorld {
     loop.updatables.push(controls);
     scene.add(ambientLight, mainLight);
 
+    // 添加地板，用于显示投影
+    const createFloor = new CreateFloor(50, 50);
+    const floor = createFloor.addFloor();
+    scene.add(floor);
+
     // 添加 stats，方便显示性能
     container.append(stats.domElement);
     loop.updatables.push(stats);
 
     const resizer = new Resizer(container, camera, renderer);
 
+    //#region 添加辅助 gui
+
+    const guiHelper = new GuiHelper();
+
+    // 添加平行光阴影
+    guiHelper.addLightShadow(mainLight, lightCameraHelper(mainLight));
+
+    //#endregion
+
     // 添加辅助组件
     scene.add(
       axesHelper,
-      gridHelper
+      gridHelper,
       // cameraHelper(camera),
-      // lightHelper(mainLight)
+      // lightHelper(mainLight),
+      // hemiLightHelper(ambientLight)
     );
   }
 
@@ -81,8 +96,9 @@ class BasicWorld {
     bmw.scale.set(120, 120, 120);
 
     let progress = 0;
-    const velocity = 0.001;
-    bmw.tick = () => {
+    bmw.tick = (delta) => {
+      const velocity = 0.1 * delta;
+
       if (progress <= 1 - velocity) {
         const point = curve.getPointAt(progress); // 获取样条曲线指定点坐标
         const pointBox = curve.getPointAt(progress + velocity); // 获取样条曲线指定点坐标
@@ -112,7 +128,7 @@ class BasicWorld {
 
     // 添加鸟到场景中
     const parrot = remoteModels.getModels().parrot;
-    parrot.position.set(3, 5, -5);
+    parrot.position.set(-3, 5, -5);
     parrot.scale.set(0.05, 0.05, 0.05);
     parrot.rotation.set(0, -Math.PI / 2, 0);
     loop.updatables.push(parrot); // 让鸟动起来

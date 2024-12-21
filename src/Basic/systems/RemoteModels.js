@@ -42,10 +42,7 @@ class RemoteModels {
 
     for (let index = 0; index < keyArr.length; index++) {
       const modelUrl = this.url + keyArr[index] + ".glb";
-      const gltfModel = await loader.loadAsync(
-        modelUrl,
-        this.onProgress.bind(this)
-      );
+      const gltfModel = await loader.loadAsync(modelUrl, this.onProgress.bind(this));
 
       // 结束加载时，隐藏进度条
       document.getElementById("progressContainer").style.display = "none";
@@ -58,6 +55,16 @@ class RemoteModels {
   setupModel(data) {
     const model = data.scene;
 
+    //递归遍历场景，允许所有Mesh产生投影、接收投影
+    model.traverse(function (obj) {
+      // 判断是否是网格模型
+      if (obj.isMesh) {
+        // 批量设置所有Mesh都可以产生阴影和接收阴影
+        obj.castShadow = true;
+        // obj.receiveShadow = true;
+      }
+    });
+
     if (data.animations.length > 0) {
       // 添加动画
       const clip = data.animations[0];
@@ -67,6 +74,9 @@ class RemoteModels {
 
       model.tick = (delta) => mixer.update(delta);
     }
+
+    model.castShadow = true;
+    model.receiveShadow = true;
 
     return model;
   }

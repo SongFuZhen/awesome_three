@@ -11,6 +11,8 @@ function createCamera(width = 800, height = 800) {
   // move the camera back so we can view the scene
   camera.position.set(30, 30, 30);
 
+  camera.lookAt(0,0,0);
+
   return camera;
 }
 
